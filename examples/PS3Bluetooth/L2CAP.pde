@@ -11,11 +11,12 @@ void ACL_event_task()
       }
       if (l2capinbuf[8] == L2CAP_CMD_COMMAND_REJECT)       
       {           
-        Serial.print("L2CAP Command Reject - Reason: ");Serial.print(l2capinbuf[13],HEX);Serial.print(" ");Serial.print(l2capinbuf[12],HEX);Serial.print(" Data: ");Serial.print(l2capinbuf[17],HEX);Serial.print(" ");Serial.print(l2capinbuf[16],HEX);Serial.print(" ");Serial.print(l2capinbuf[15],HEX);Serial.print(" ");Serial.println(l2capinbuf[14],HEX);
+        printProgStr(Cmd_Reject_str);
+        Serial.print(String(String((unsigned char)l2capinbuf[13],HEX) + " " + String((unsigned char)l2capinbuf[12],HEX) + " Data: " + String((unsigned char)l2capinbuf[17],HEX) + " " + String((unsigned char)l2capinbuf[16],HEX) + " " + String((unsigned char)l2capinbuf[15],HEX) + " " + String((unsigned char)l2capinbuf[14],HEX)));
       }
       else if (l2capinbuf[8] == L2CAP_CMD_CONNECTION_REQUEST)
       {
-        //Serial.print("PSM: 0x ");Serial.print(l2capinbuf[13],HEX);Serial.print(" ");Serial.println(l2capinbuf[12],HEX);Serial.print(" SCID: 0x ");Serial.print(l2capinbuf[15],HEX);Serial.print(" ");Serial.print(l2capinbuf[14],HEX);         
+        //Serial.print(String("\r\nPSM: 0x" + String((unsigned char)l2capinbuf[13],HEX) + " " + String((unsigned char)l2capinbuf[12],HEX) + " SCID: 0x" + String((unsigned char)l2capinbuf[15],HEX) + " " + String((unsigned char)l2capinbuf[14],HEX)));     
         if ((l2capinbuf[13] | l2capinbuf[12]) == L2CAP_PSM_HID_CTRL)
         {
           identifier = l2capinbuf[9];
@@ -68,9 +69,9 @@ void ACL_event_task()
       else if (l2capinbuf[8] == L2CAP_CMD_DISCONNECT_REQUEST)
       {
         if (l2capinbuf[12] == control_dcid[0] && l2capinbuf[13] == control_dcid[1])
-          Serial.println("Disconnected Request: Disconnected Control");
+          printProgStr(Disconnet_Req_Control_str);
         else if (l2capinbuf[12] == interrupt_dcid[0] && l2capinbuf[13] == interrupt_dcid[1])
-          Serial.println("Disconnected Request: Disconnected Interrupt");
+          printProgStr(Disconnet_Req_Interrupt_str);
       }
       else if (l2capinbuf[8] == L2CAP_CMD_DISCONNECT_RESPONSE)
       {
@@ -109,7 +110,7 @@ void L2CAP_task()
                 case L2CAP_EV_CONTROL_SETUP:
                     if (l2cap_control_connection_reguest)
                     {
-                        Serial.println("HID Control Incoming Connection Request");
+                        printProgStr(HID_Control_Connect_Req_str);                     
                         l2cap_connection_response(identifier, control_dcid, control_scid, PENDING);                        
                         l2cap_connection_response(identifier, control_dcid, control_scid, SUCCESSFUL);                        
                         identifier++;
@@ -121,7 +122,7 @@ void L2CAP_task()
                 case L2CAP_EV_CONTROL_REQUEST:
                     if (l2cap_control_config_reguest)
                     {
-                        Serial.println("HID Control Configuration Request");
+                        printProgStr(HID_Control_Config_Req_str);
                         l2cap_config_response(identifier, control_scid);                        
                         l2cap_state = L2CAP_EV_CONTROL_SUCCESS;
                     }
@@ -130,14 +131,14 @@ void L2CAP_task()
                 case L2CAP_EV_CONTROL_SUCCESS:
                     if (l2cap_control_config_success)
                     {
-                        Serial.println("HID Control Successfully Configured");
+                        printProgStr(HID_Control_Success_str);
                         l2cap_state = L2CAP_EV_INTERRUPT_SETUP;
                     }
                     break;
                 case L2CAP_EV_INTERRUPT_SETUP:
                     if (l2cap_interrupt_connection_reguest)
                     {
-                        Serial.println("HID Interrupt Incoming Connection Request");
+                        printProgStr(HID_Interrupt_Connect_Req_str);
                         l2cap_connection_response(identifier, interrupt_dcid, interrupt_scid, PENDING);                        
                         l2cap_connection_response(identifier, interrupt_dcid, interrupt_scid, SUCCESSFUL);                        
                         identifier++;
@@ -149,7 +150,7 @@ void L2CAP_task()
                 case L2CAP_EV_INTERRUPT_REQUEST:
                     if (l2cap_interrupt_config_reguest)
                     {
-                        Serial.println("HID Interrupt Configuration Request");
+                        printProgStr(HID_Interrupt_Config_Req_str);
                         l2cap_config_response(identifier, interrupt_scid);                        
                         l2cap_state = L2CAP_EV_INTERRUPT_SUCCESS;
                     }
@@ -157,7 +158,7 @@ void L2CAP_task()
                 case L2CAP_EV_INTERRUPT_SUCCESS:
                     if (l2cap_interrupt_config_success)
                     {
-                        Serial.println("HID Interrupt Successfully Configured");
+                        printProgStr(HID_Interrupt_Success_str);
                         l2cap_state = L2CAP_EV_HID_ENABLE_SIXAXIS;
                     }
                     break;
@@ -167,7 +168,7 @@ void L2CAP_task()
                     if (remote_name[0][0] == 'P')//First letter in PLAYSTATION(R)3 Controller ('P') - 0x50
                     {
                         hid_enable_sixaxis();
-                        Serial.println("Dualshock 3 Controller Enabled");
+                        printProgStr(Dualshock_Enabled_str);
                         hid_setLedOn(LED1);
                         PS3BTConnected = true;
                         for (byte i = 15; i < 19; i++)
@@ -176,7 +177,7 @@ void L2CAP_task()
                     else if (remote_name[0][0] == 'N')//First letter in Navigation Controller ('N') - 0x4E
                     {
                         hid_enable_sixaxis();
-                        Serial.println("Navigation Controller Enabled");
+                        printProgStr(Navigation_Enabled_str);
                         hid_setLedOn(LED1);//This just turns LED constantly on, on the Navigation controller
                         PS3NavigationBTConnected = true;
                         for (byte i = 15; i < 17; i++)
@@ -185,7 +186,7 @@ void L2CAP_task()
                     }
                     else if (remote_name[0][0] == 'M')//First letter in Motion Controller ('M') - 0x4D
                     {
-                        Serial.println("Motion Controller Enabled");
+                        printProgStr(Motion_Enabled_str);
                                                 
                         hid_MoveSetBulb(Red);
                         delay(100);
@@ -209,7 +210,7 @@ void L2CAP_task()
                         timerLEDRumble = millis();
                         l2capinbuf[12] = 0x00;//reset the 12 byte, as the program sometimes read it as the PS_Move button has been pressed
                     }
-                    delay(1000);                    
+                    delay(1000);//There has to be a delay before data can be read                   
                     Serial.println("HID Done");
                     l2cap_state = L2CAP_EV_L2CAP_DONE;                    
                     break;
@@ -229,7 +230,7 @@ void L2CAP_task()
                 case L2CAP_EV_INTERRUPT_DISCONNECT:
                     if (l2cap_interrupt_disconnect_response)
                     {
-                        Serial.println("Disconnected Interrupt Channel");
+                        printProgStr(Interrupt_Disconnected_str);
                         identifier++;
                         l2cap_disconnection_request(identifier, control_dcid, control_scid);                                                
                         l2cap_state = L2CAP_EV_CONTROL_DISCONNECT;
@@ -239,7 +240,7 @@ void L2CAP_task()
                 case L2CAP_EV_CONTROL_DISCONNECT:
                     if (l2cap_control_disconnect_response)
                     {
-                        Serial.println("Disconnected Control Channel");
+                        printProgStr(Control_Disconnected_str);
                         hci_disconnect();
                         l2cap_state = L2CAP_EV_L2CAP_DONE;
                         hci_state = HCI_DISCONNECT_STATE;
@@ -260,7 +261,7 @@ void readReport()
     else if(PS3MoveBTConnected)
       ButtonState = (unsigned long)((unsigned char)l2capinbuf[10] | ((unsigned int)((unsigned char)l2capinbuf[11]) << 8) | ((unsigned long)((unsigned char)l2capinbuf[12]) << 16));
       
-    //Serial.println(ButtonState,HEX);      
+    //Serial.println(ButtonState,HEX);
 
     if(ButtonState != OldButtonState)
       ButtonChanged = true;    
@@ -275,7 +276,7 @@ void printReport()//Uncomment for debugging
 {                    
   if((unsigned char)l2capinbuf[8] == 0xA1)//HID_THDR_DATA_INPUT  
   {
-    for(int i = 11; i < 58;i++)
+    for(int i = 10; i < 58;i++)
     {
       if((unsigned char)l2capinbuf[i] < 16) 
         Serial.print("0");   
