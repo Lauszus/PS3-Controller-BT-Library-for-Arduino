@@ -297,7 +297,7 @@ void HCI_task()
       }      
       if (disc_bdaddr[0][0] < 16) 
         Serial.print("0");
-      Serial.println(disc_bdaddr[0][0], HEX);
+      Serial.print(disc_bdaddr[0][0], HEX);
          
       l2cap_event_flag = 0;//Clear all flags
       hci_event_flag = 0;//Clear all flags 
@@ -311,7 +311,7 @@ void HCI_task()
         l2capoutbuf[i] = 0;   
         
       for (int i = 0; i < OUTPUT_REPORT_BUFFER_SIZE; i++)
-        HIDBuffer[i + 2] = OUTPUT_REPORT_BUFFER[i];//First two bytes reserved for report type and ID    
+        HIDBuffer[i + 2] = pgm_read_byte(&OUTPUT_REPORT_BUFFER[i]);//First two bytes reserved for report type and ID    
       for (byte i = 2; i < HIDMoveBufferSize; i++)
         HIDMoveBuffer[i] = 0;           
 

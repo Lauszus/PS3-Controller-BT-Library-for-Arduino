@@ -4,6 +4,7 @@
 #include <avr/pgmspace.h>
 
 #include "enums.h"//Enums to set the LED, Color of the Motions controller etc.
+#include "progmemConstants.h"
 
 /*The application will work in reduced host mode, so we can save program and data
  memory space. After verifying the PID and VID we will use known values for the 
@@ -46,12 +47,10 @@
 #define HCI_DONE_STATE 11
 #define HCI_DISCONNECT_STATE 12
 
-
 /* variables used by high level HCI task */
 unsigned char hci_state;  //current state of bluetooth hci connection
 unsigned int  hci_counter; // counter used for bluetooth hci loops
 unsigned char remote_name_entry;
-
 
 /* HCI event flags*/
 #define HCI_FLAG_CMD_COMPLETE 0x01
@@ -62,7 +61,6 @@ unsigned char remote_name_entry;
 #define HCI_FLAG_INQUIRY_COMPLETE 0x20
 #define HCI_FLAG_REMOTE_NAME_COMPLETE 0x40
 #define HCI_FLAG_INCOMING_REQUEST 0x80
-
 
 /*Macros for HCI event flag tests */
 #define hci_cmd_complete (hci_event_flag & HCI_FLAG_CMD_COMPLETE)
@@ -115,18 +113,14 @@ unsigned char dev_role;
 
 /* Bluetooth L2CAP states for L2CAP_task() */
 #define L2CAP_EV_WAIT 0
-
 #define L2CAP_EV_CONTROL_SETUP 1
 #define L2CAP_EV_CONTROL_REQUEST 2
 #define L2CAP_EV_CONTROL_SUCCESS 3
-
 #define L2CAP_EV_INTERRUPT_SETUP 4
 #define L2CAP_EV_INTERRUPT_REQUEST 5
 #define L2CAP_EV_INTERRUPT_SUCCESS 6
-
 #define L2CAP_EV_HID_ENABLE_SIXAXIS 7
 #define L2CAP_EV_L2CAP_DONE 8
-
 #define L2CAP_EV_INTERRUPT_DISCONNECT 9
 #define L2CAP_EV_CONTROL_DISCONNECT 10
 
@@ -161,7 +155,6 @@ const byte SUCCESSFUL = 0x00;
 #define l2cap_interrupt_disconnect_response (l2cap_event_flag & L2CAP_EV_INTERRUPT_DISCONNECT_RESPONSE)
 unsigned int  l2cap_event_flag;// l2cap flags of received bluetooth events
 
-
 /* L2CAP signaling commands */
 #define L2CAP_CMD_COMMAND_REJECT 0x01
 #define L2CAP_CMD_CONNECTION_REQUEST 0x02
@@ -170,7 +163,6 @@ unsigned int  l2cap_event_flag;// l2cap flags of received bluetooth events
 #define L2CAP_CMD_CONFIG_RESPONSE 0x05
 #define L2CAP_CMD_DISCONNECT_REQUEST 0x06
 #define L2CAP_CMD_DISCONNECT_RESPONSE 0x07
-
 
 /* L2CAP Channels */
 byte control_scid[2];// L2CAP source CID for HID_Control                
@@ -200,79 +192,10 @@ boolean printTemperature;
 unsigned long timerHID;// timer used see if there has to be a delay before a new HID command
 unsigned long dtimeHID;// delta time since last HID command
 
-unsigned long timerLEDRumble;// used to continuously set PS3 Move controller LED and rumble values
-unsigned long dtimeLEDRumble;// used to know how longs since last since the LED and rumble values was written
-
-#define OUTPUT_REPORT_BUFFER_SIZE 48
-
-const byte OUTPUT_REPORT_BUFFER[OUTPUT_REPORT_BUFFER_SIZE] = 
-{
-  0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 
-  0xff, 0x27, 0x10, 0x00, 0x32, 
-  0xff, 0x27, 0x10, 0x00, 0x32, 
-  0xff, 0x27, 0x10, 0x00, 0x32, 
-  0xff, 0x27, 0x10, 0x00, 0x32, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 
-};
+unsigned long timerBulbRumble;// used to continuously set PS3 Move controller Bulb and rumble values
+unsigned long dtimeBulbRumble;// used to know how longs since last since the Bulb and rumble values was written
 
 EP_RECORD ep_record[ BT_NUM_EP ];  //endpoint record structure for the Bluetooth controller
-
-/* Print strings in Program Memory */
-
-/* HCI Strings */
-const char Free_Memory_str[] PROGMEM = "\r\nfreeMemory() reports:\t"; 
-const char Dev_Error_str[] PROGMEM ="\r\nDevice Descriptor Error:\t";
-const char Wrong_Device_str[] PROGMEM ="\r\nWrong USB Device ID";
-const char Config_Error_str[] PROGMEM ="\r\nError Setting Configuration:\t";
-const char Int_Error_str[] PROGMEM ="\r\nError Setting Interface:\t";
-const char CSR_Init_str[] PROGMEM ="\r\nCSR Initialized";
-const char HCI_Reset_str[] PROGMEM ="\r\nHCI Reset complete";
-const char Reset_Error_str[] PROGMEM ="\r\nNo response to HCI Reset ";
-const char ACL_Length_str[] PROGMEM ="\r\nACL Data Packet Length:\t";
-const char SCO_Length_str[] PROGMEM ="\r\nSCO Data Packet Length:\t";
-const char ACL_Number_str[] PROGMEM ="\r\nTotal ACL Data Packets:\t ";
-const char SCO_Number_str[] PROGMEM ="\r\nTotal SCO Data Packets:\t ";
-const char HCI_Version_str[] PROGMEM ="\r\nHCI Version:\t ";
-const char HCI_Revision_str[] PROGMEM ="\r\nHCI Revision:\t ";
-const char LMP_Version_str[] PROGMEM ="\r\nLMP Version:\t";
-const char Manuf_Id_str[] PROGMEM ="\r\nManufacturer Id:\t";
-const char LMP_Subvers_str[] PROGMEM ="\r\nLMP Subversion:\t";
-const char Local_Name_str[] PROGMEM ="\r\nLocal Name:\t";
-const char Local_BDADDR_str[] PROGMEM ="\r\nLocal Bluetooth Address:\t";
-const char Class_str[] PROGMEM ="  Class: ";
-const char Mode_str[] PROGMEM ="  Mode: ";
-const char Connect_In_str[] PROGMEM = "\r\nWait For Incoming Connection Request";
-const char In_Request_str[] PROGMEM = "\r\nIncoming Request";
-const char Remote_Name_str[] PROGMEM ="\r\nRemote Name: ";
-const char Device_Connected_str[] PROGMEM = "\r\nConnected to Device: ";
-const char Device_Disconnected_str[] PROGMEM = "\r\nDisconnected from Device: ";
-const char Scan_Disabled_str[] PROGMEM = "\r\nScan Disabled";
-const char HCI_Command_Failed_str[] PROGMEM ="\r\nHCI Command Failed: ";
-const char Unmanaged_Event_str[] PROGMEM ="\r\nUnmanaged Event: ";
-
-/* L2CAP Strings */
-const char Cmd_Reject_str[] PROGMEM ="\r\nL2CAP Command Rejected - Reason: ";
-const char Disconnet_Req_Control_str[] PROGMEM ="\r\nDisconnected Request: Disconnected Control";
-const char Disconnet_Req_Interrupt_str[] PROGMEM ="\r\nDisconnected Request: Disconnected Interrupt";
-
-const char HID_Control_Connect_Req_str[] PROGMEM ="\r\nHID Control Incoming Connection Request";
-const char HID_Control_Config_Req_str[] PROGMEM ="\r\nHID Control Configuration Request";
-const char HID_Control_Success_str[] PROGMEM ="\r\nHID Control Successfully Configured";
-
-const char HID_Interrupt_Connect_Req_str[] PROGMEM ="\r\nHID Interrupt Incoming Connection Request";
-const char HID_Interrupt_Config_Req_str[] PROGMEM ="\r\nHID Interrupt Configuration Request";
-const char HID_Interrupt_Success_str[] PROGMEM ="\r\nHID Interrupt Successfully Configured";
-
-const char Dualshock_Enabled_str[] PROGMEM ="\r\nDualshock 3 Controller Enabled";
-const char Navigation_Enabled_str[] PROGMEM ="\r\nNavigation Controller Enabled";
-const char Motion_Enabled_str[] PROGMEM ="\r\nMotion Controller Enabled";
-
-const char Interrupt_Disconnected_str[] PROGMEM ="\r\nDisconnected Interrupt Channel";
-const char Control_Disconnected_str[] PROGMEM ="\r\nDisconnected Control Channel";
-
 
 char hcibuf[ MAX_BUFFER_SIZE ];//General purpose buffer for hci data
 char l2capinbuf[ MAX_BUFFER_SIZE ];//General purpose buffer for l2cap in data
@@ -291,7 +214,7 @@ USB Usb;
 void setup() {
   //Needed for PS3 Dualshock Controller to work
   for (int i = 0; i < OUTPUT_REPORT_BUFFER_SIZE; i++)
-    HIDBuffer[i + 2] = OUTPUT_REPORT_BUFFER[i];//First two bytes reserved for report type and ID
+    HIDBuffer[i + 2] = pgm_read_byte(&OUTPUT_REPORT_BUFFER[i]);//First two bytes reserved for report type and ID
 
   HIDBuffer[0] = 0x52;// HID BT Set_report (0x50) | Report Type (Output 0x02)
   HIDBuffer[1] = 0x01;// Report ID
@@ -299,7 +222,7 @@ void setup() {
   //Needed for PS3 Move Controller commands to work
   HIDMoveBuffer[0] = 0xA2;// HID BT DATA_request (0xA0) | Report Type (Output 0x02)            
   HIDMoveBuffer[1] = 0x02;// Report ID      
-
+    
   Serial.begin(115200);
   Serial.println("");
   printProgStr(Free_Memory_str);
@@ -312,13 +235,16 @@ void loop() {
   Max.Task();
   Usb.Task();
   delay(1);
-  if( Usb.getUsbTaskState() == USB_STATE_CONFIGURING ) {  //wait for addressing state
+  if(Usb.getUsbTaskState() == USB_STATE_CONFIGURING)//wait for addressing state 
+  {   
     CSR_init();
     Usb.setUsbTaskState( USB_STATE_RUNNING );        
   }
-  if( Usb.getUsbTaskState() == USB_STATE_RUNNING ){
+  if(Usb.getUsbTaskState() == USB_STATE_RUNNING)
+  {
     HCI_event_task(); //poll the HCI event pipe
     ACL_event_task(); // start polling the ACL input pipe too, though discard data until connected
+    
     if(PS3BTConnected || PS3NavigationBTConnected)
     {
       outputBT = "";//Reset string
@@ -386,7 +312,7 @@ void loop() {
         }                  
       }
       if (outputBT != "" && outputBT != lastOutputBT)//Check if output is not empty and not equal to the last one
-        Serial.println("PS3 Controller" + outputBT);
+        Serial.print("\r\nPS3 Controller" + outputBT);
       lastOutputBT = outputBT;
     }
     else if(PS3MoveBTConnected)
@@ -467,7 +393,7 @@ void loop() {
         outputBT += " - Temperature: " + temphigh + "." + templow;
       }
       if (outputBT != "" && outputBT != lastOutputBT)//Check if output is not empty and not equal to the last one
-        Serial.println("PS3 Move Controller" + outputBT);
+        Serial.print("\r\nPS3 Move Controller" + outputBT);
       lastOutputBT = outputBT;
     }
   }
@@ -538,7 +464,16 @@ void printProgStr(const prog_char str[])
   while((c = pgm_read_byte(str++)))
     Serial.print(c);
 }
-
+/*
+void test()
+{  
+  for(int i = 0; i < OUTPUT_REPORT_BUFFER_SIZE;i++)
+  {
+    Serial.print(" 0x");
+    Serial.print(pgm_read_byte(&OUTPUT_REPORT_BUFFER[i]), HEX);
+  }  
+}
+*/
 void disconnectController()//Use this void to disconnect any of the controllers
 {
   if (PS3BTConnected)

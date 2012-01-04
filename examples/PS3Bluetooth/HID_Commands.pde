@@ -51,7 +51,7 @@ void HID_Command(char* data, unsigned int length)
 void hid_setAllOff()
 {
   for (int i = 0; i < OUTPUT_REPORT_BUFFER_SIZE; i++)
-    HIDBuffer[i + 2] = OUTPUT_REPORT_BUFFER[i];//First two bytes reserved for report type and ID
+    HIDBuffer[i + 2] = pgm_read_byte(&OUTPUT_REPORT_BUFFER[i]);//First two bytes reserved for report type and ID
 
   HID_Command(HIDBuffer, OUTPUT_REPORT_BUFFER_SIZE + 2);
 }
@@ -64,7 +64,7 @@ void hid_setRumbleOff()
 
   HID_Command(HIDBuffer, OUTPUT_REPORT_BUFFER_SIZE + 2);
 }
-void hid_setRumbleOn(byte Rumble)
+void hid_setRumbleOn(Rumble mode)
 {
   /*Still not totally sure how it works, maybe something like this instead?
    * 3 - duration_right
@@ -72,32 +72,32 @@ void hid_setRumbleOn(byte Rumble)
    * 5 - duration_left
    * 6 - power_left
    */
-  if (((unsigned int)Rumble & 0x30) > 0)
+  if (((unsigned int)mode & 0x30) > 0)
   {
     HIDBuffer[3] = 0xfe;
     HIDBuffer[5] = 0xfe;
 
-    if (((unsigned int)Rumble & 0x10) > 0)
+    if (mode == RumbleHigh)
     {
       HIDBuffer[4] = 0;//low mode off
       HIDBuffer[6] = 0xff;//high mode on
     }
     else
     {
-      HIDBuffer[6] = 0;//high mode off
       HIDBuffer[4] = 0xff;//low mode on
+      HIDBuffer[6] = 0;//high mode off
     }
 
     HID_Command(HIDBuffer, OUTPUT_REPORT_BUFFER_SIZE + 2);
   }
 }
-void hid_setLedOff(byte LED)
+void hid_setLedOff(LED a)
 {
   //check if LED is already off
-  if ((byte)((byte)(((unsigned int)LED << 1) & HIDBuffer[11])) != 0)
+  if ((byte)((byte)(((unsigned int)a << 1) & HIDBuffer[11])) != 0)
   {
     //set the LED into the write buffer
-    HIDBuffer[11] = (byte)((byte)(((unsigned int)LED & 0x0f) << 1) ^ HIDBuffer[11]);
+    HIDBuffer[11] = (byte)((byte)(((unsigned int)a & 0x0f) << 1) ^ HIDBuffer[11]);
 
     HID_Command(HIDBuffer, OUTPUT_REPORT_BUFFER_SIZE + 2);
   }            
@@ -108,7 +108,7 @@ void hid_setLedOn(LED a)
 
   HID_Command(HIDBuffer, OUTPUT_REPORT_BUFFER_SIZE + 2);            
 }
-void hid_enable_sixaxis()
+void hid_enable_sixaxis()//Command used to enable the Dualshock 3 and Navigation controller
 {
   char cmd_buf[12];
   cmd_buf[0] = 0x53;// HID BT Set_report (0x50) | Report Type (Feature 0x03)
@@ -148,7 +148,7 @@ void HIDMove_Command(char* data, unsigned int length)
 }
 void hid_MoveSetBulb(byte r, byte g, byte b)//Use this to set the Color using RGB values
 {            
-  //set the LED's values into the write buffer            
+  //set the Bulb's values into the write buffer            
   HIDMoveBuffer[3] = r;
   HIDMoveBuffer[4] = g;
   HIDMoveBuffer[5] = b;

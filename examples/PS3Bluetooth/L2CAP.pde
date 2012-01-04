@@ -168,26 +168,31 @@ void L2CAP_task()
                     if (remote_name[0][0] == 'P')//First letter in PLAYSTATION(R)3 Controller ('P') - 0x50
                     {
                         hid_enable_sixaxis();
-                        printProgStr(Dualshock_Enabled_str);
                         hid_setLedOn(LED1);
-                        PS3BTConnected = true;
+                        
                         for (byte i = 15; i < 19; i++)
-                            l2capinbuf[i] = 0x7F;//Set the analog joystick values to center position                        
+                            l2capinbuf[i] = 0x7F;//Set the analog joystick values to center position 
+                        l2capinbuf[12] = 0x00;//reset the 12 byte, as the program sometimes read it as a button has been pressed
+                        
+                        delay(1000);//There has to be a delay before data can be read 
+                        printProgStr(Dualshock_Enabled_str);     
+                        PS3BTConnected = true;
                     }
                     else if (remote_name[0][0] == 'N')//First letter in Navigation Controller ('N') - 0x4E
                     {
                         hid_enable_sixaxis();
-                        printProgStr(Navigation_Enabled_str);
                         hid_setLedOn(LED1);//This just turns LED constantly on, on the Navigation controller
-                        PS3NavigationBTConnected = true;
-                        for (byte i = 15; i < 17; i++)
+                        
+                        for (byte i = 15; i < 19; i++)
                             l2capinbuf[i] = 0x7F;//Set the analog joystick values to center
-                        l2capinbuf[12] = 0x00;//reset the 12 byte, as the program sometimes read it as the Cross button has been pressed
+                        l2capinbuf[12] = 0x00;//reset the 12 byte, as the program sometimes read it as a button has been pressed
+                        
+                        delay(1000);//There has to be a delay before data can be read
+                        printProgStr(Navigation_Enabled_str);                        
+                        PS3NavigationBTConnected = true;                                                
                     }
                     else if (remote_name[0][0] == 'M')//First letter in Motion Controller ('M') - 0x4D
-                    {
-                        printProgStr(Motion_Enabled_str);
-                                                
+                    {                                                                        
                         hid_MoveSetBulb(Red);
                         delay(100);
                         hid_MoveSetBulb(Green);
@@ -205,24 +210,26 @@ void L2CAP_task()
                         hid_MoveSetBulb(White);
                         delay(100);
                         hid_MoveSetBulb(Off);                        
-
-                        PS3MoveBTConnected = true;
-                        timerLEDRumble = millis();
+                        
                         l2capinbuf[12] = 0x00;//reset the 12 byte, as the program sometimes read it as the PS_Move button has been pressed
-                    }
-                    delay(1000);//There has to be a delay before data can be read                   
-                    Serial.println("HID Done");
+                        
+                        delay(1000);//There has to be a delay before data can be read
+                        printProgStr(Motion_Enabled_str);
+                        PS3MoveBTConnected = true;
+                        
+                        timerBulbRumble = millis();
+                    }                    
                     l2cap_state = L2CAP_EV_L2CAP_DONE;                    
                     break;
 
                 case L2CAP_EV_L2CAP_DONE:
-                    if (PS3MoveBTConnected)//The LED and rumble values, has to be send at aproximatly every 5th second for it to stay on
+                    if (PS3MoveBTConnected)//The Bulb and rumble values, has to be send at aproximatly every 5th second for it to stay on
                     {
-                        dtimeLEDRumble = millis() - timerLEDRumble;
-                        if (dtimeLEDRumble / 1000 >= 4)
+                        dtimeBulbRumble = millis() - timerBulbRumble;
+                        if (dtimeBulbRumble > 4000)//Send at least every 4th second
                         {
-                            HIDMove_Command(HIDMoveBuffer, HIDMoveBufferSize);//The LED and rumble values, has to be written again and again, for it to stay turned on
-                            timerLEDRumble = millis();
+                            HIDMove_Command(HIDMoveBuffer, HIDMoveBufferSize);//The Bulb and rumble values, has to be written again and again, for it to stay turned on
+                            timerBulbRumble = millis();
                         }
                     }
                     break;
