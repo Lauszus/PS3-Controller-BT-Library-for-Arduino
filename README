@@ -1,10 +1,11 @@
-The code is released under the GNU General Public License
+The code is released under the GNU General Public License.
+This code was developed by Kristian Lauszus.
 
-This code was developed by Kristian Lauszus
-For more information visit his blog at: http://blog.tkjelectronics.dk/2011/09/fez-panda-ps3-controller-via-bluetooth/ or send him an email at kristianl@tkjelectronics.dk
-You should also visit the official wiki: http://wiki.tinyclr.com/index.php?title=PS3_Controller for the FEZ Panda, as the code was originally developed for the FEZ Panda.
+For more information visit his blog at: http://blog.tkjelectronics.dk/ or send him an email at kristianl@tkjelectronics.dk.
+You should also visit the official wiki: https://github.com/Lauszus/PS3-Controller-BT-Library-for-Arduino/wiki/PS3-Controller-BT-wiki for information.
 
-All three PS3 Controllers are supported (Dualshock 3-, Navigation-, and Motioncontroller). They communicate with the Arduino via Bluetooth using the USB Host Shield from http://www.circuitsathome.com/
+All three PS3 Controllers are supported (Dualshock 3-, Navigation-, and Motioncontroller). 
+They communicate with the Arduino via Bluetooth using the USB Host Shield from http://www.circuitsathome.com/
 
 A special thanks go to the following people:
 "Richard Ibbotson" who made this guide: http://www.circuitsathome.com/mcu/ps3-and-wiimote-game-controllers-on-the-arduino-host-shield-part-1
