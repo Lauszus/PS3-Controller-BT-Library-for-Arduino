@@ -48,18 +48,14 @@ const char Unmanaged_Event_str[] PROGMEM ="\r\nUnmanaged Event: ";
 const char Cmd_Reject_str[] PROGMEM ="\r\nL2CAP Command Rejected - Reason: ";
 const char Disconnet_Req_Control_str[] PROGMEM ="\r\nDisconnected Request: Disconnected Control";
 const char Disconnet_Req_Interrupt_str[] PROGMEM ="\r\nDisconnected Request: Disconnected Interrupt";
-
 const char HID_Control_Connect_Req_str[] PROGMEM ="\r\nHID Control Incoming Connection Request";
 const char HID_Control_Config_Req_str[] PROGMEM ="\r\nHID Control Configuration Request";
 const char HID_Control_Success_str[] PROGMEM ="\r\nHID Control Successfully Configured";
-
 const char HID_Interrupt_Connect_Req_str[] PROGMEM ="\r\nHID Interrupt Incoming Connection Request";
 const char HID_Interrupt_Config_Req_str[] PROGMEM ="\r\nHID Interrupt Configuration Request";
 const char HID_Interrupt_Success_str[] PROGMEM ="\r\nHID Interrupt Successfully Configured";
-
 const char Dualshock_Enabled_str[] PROGMEM ="\r\nDualshock 3 Controller Enabled";
 const char Navigation_Enabled_str[] PROGMEM ="\r\nNavigation Controller Enabled";
 const char Motion_Enabled_str[] PROGMEM ="\r\nMotion Controller Enabled";
-
 const char Interrupt_Disconnected_str[] PROGMEM ="\r\nDisconnected Interrupt Channel";
 const char Control_Disconnected_str[] PROGMEM ="\r\nDisconnected Control Channel";

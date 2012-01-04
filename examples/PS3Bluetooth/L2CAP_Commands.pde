@@ -16,7 +16,7 @@ void L2CAP_Command(char* data, int length)
   for (unsigned int i = 0; i < length; i++)//L2CAP C-frame
     buf[8 + i] = data[i];
 
-  Usb.outTransfer(BT_ADDR, ep_record[ DATAOUT_PIPE ].epAddr, (8 + length), buf);//BulkOutPipe.TransferData(buf, 0, length + 8);
+  Usb.outTransfer(BT_ADDR, ep_record[ DATAOUT_PIPE ].epAddr, (8 + length), buf);
 }
 void l2cap_connection_response(byte rxid, byte dcid[], byte scid[], byte result)
 {            

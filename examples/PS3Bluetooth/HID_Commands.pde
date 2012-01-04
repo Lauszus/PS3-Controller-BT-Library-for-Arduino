@@ -44,7 +44,7 @@ void HID_Command(char* data, unsigned int length)
   if (dtimeHID <= 250)// Check if is has been more than 250ms since last command                
     delay((int)(250 - dtimeHID));//There have to be a delay between commands
 
-  Usb.outTransfer(BT_ADDR, ep_record[ DATAOUT_PIPE ].epAddr, (8 + length), buf);//BulkOutPipe.TransferData(buf, 0, length + 8);
+  Usb.outTransfer(BT_ADDR, ep_record[ DATAOUT_PIPE ].epAddr, (8 + length), buf);
 
   timerHID = millis();
 }
@@ -66,7 +66,7 @@ void hid_setRumbleOff()
 }
 void hid_setRumbleOn(Rumble mode)
 {
-  /*Still not totally sure how it works, maybe something like this instead?
+  /* Still not totally sure how it works, maybe something like this instead?
    * 3 - duration_right
    * 4 - power_right
    * 5 - duration_left
@@ -142,7 +142,7 @@ void HIDMove_Command(char* data, unsigned int length)
   if (dtimeHID <= 250)// Check if is has been less than 200ms since last command                            
     delay((int)(250 - dtimeHID));//There have to be a delay between commands
   
-  Usb.outTransfer(BT_ADDR, ep_record[ DATAOUT_PIPE ].epAddr, (8 + length), buf);//BulkOutPipe.TransferData(buf, 0, length + 8);
+  Usb.outTransfer(BT_ADDR, ep_record[ DATAOUT_PIPE ].epAddr, (8 + length), buf);
   
   timerHID = millis();
 }
@@ -157,7 +157,7 @@ void hid_MoveSetBulb(byte r, byte g, byte b)//Use this to set the Color using RG
 }
 void hid_MoveSetBulb(Colors color)//Use this to set the Color using the predefined colors in "enums.h"
 {
-  //set the LED's values into the write buffer            
+  //set the Bulb's values into the write buffer            
   HIDMoveBuffer[3] = (char)(color >> 16);
   HIDMoveBuffer[4] = (char)(color >> 8);
   HIDMoveBuffer[5] = (char)(color);  
