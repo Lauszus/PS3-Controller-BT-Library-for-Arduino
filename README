@@ -1,7 +1,7 @@
 The code is released under the GNU General Public License.
 This code was developed by Kristian Lauszus.
 
-For more information visit his blog at: http://blog.tkjelectronics.dk/ or send him an email at kristianl@tkjelectronics.dk.
+For more information visit his blog at: http://blog.tkjelectronics.dk/ or send him an email at kristianl at tkjelectronics dot dk.
 You should also visit the official wiki: https://github.com/Lauszus/PS3-Controller-BT-Library-for-Arduino/wiki/PS3-Controller-BT-wiki for information.
 
 All three PS3 Controllers are supported (Dualshock 3-, Navigation-, and Motioncontroller). 
