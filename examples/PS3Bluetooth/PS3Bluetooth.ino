@@ -302,7 +302,7 @@ void loop() {
             outputBT += " - R3";
 
           if(GetButton(SELECT))
-            outputBT += " - Select - " + GetStatusString();;
+            outputBT += " - Select - " + GetStatusString();
           if(GetButton(START))
             outputBT += " - Start";                                
         }                  
