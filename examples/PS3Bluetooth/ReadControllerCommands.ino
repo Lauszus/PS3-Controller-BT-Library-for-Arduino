@@ -136,7 +136,7 @@ boolean GetStatus(Status c)
 {
   if (l2capinbuf == NULL)
     return false;
-  if ((unsigned char)l2capinbuf[(unsigned int)c >> 8] == ((byte)c & 0xff))
+  if ((unsigned char)l2capinbuf[(unsigned int)c >> 8] == ((char)c & 0xff))
     return true;
   return false;
 }
