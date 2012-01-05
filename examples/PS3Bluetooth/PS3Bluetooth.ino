@@ -105,10 +105,7 @@ unsigned char disc_mode[3];
 unsigned char remote_name[3][30]; // first 20 chars of name
 unsigned char dev_link_type;
 unsigned char dev_role;
-
-// used in control endpoint header for HCI Commands
-#define bmREQ_HCI_OUT  USB_SETUP_HOST_TO_DEVICE|USB_SETUP_TYPE_CLASS|USB_SETUP_RECIPIENT_DEVICE
-#define HCI_COMMAND_REQ    0  
+  
 
 /* Bluetooth L2CAP states for L2CAP_task() */
 #define L2CAP_EV_WAIT 0
@@ -152,7 +149,7 @@ const byte SUCCESSFUL = 0x00;
 
 #define l2cap_control_disconnect_response (l2cap_event_flag & L2CAP_EV_CONTROL_DISCONNECT_RESPONSE)
 #define l2cap_interrupt_disconnect_response (l2cap_event_flag & L2CAP_EV_INTERRUPT_DISCONNECT_RESPONSE)
-unsigned int  l2cap_event_flag;// l2cap flags of received bluetooth events
+unsigned int l2cap_event_flag;// l2cap flags of received bluetooth events
 
 /* L2CAP signaling commands */
 #define L2CAP_CMD_COMMAND_REJECT 0x01
@@ -164,17 +161,17 @@ unsigned int  l2cap_event_flag;// l2cap flags of received bluetooth events
 #define L2CAP_CMD_DISCONNECT_RESPONSE 0x07
 
 /* L2CAP Channels */
-byte control_scid[2];// L2CAP source CID for HID_Control                
-byte control_dcid[2] = { 
+char control_scid[2];// L2CAP source CID for HID_Control                
+char control_dcid[2] = { 
   0x40, 0x00 };//0x0040        
-byte interrupt_scid[2];// L2CAP source CID for HID_Interrupt        
-byte interrupt_dcid[2] = { 
+char interrupt_scid[2];// L2CAP source CID for HID_Interrupt        
+char interrupt_dcid[2] = { 
   0x41, 0x00 };//0x0041
-byte identifier;//Identifier for connection  
+char identifier;//Identifier for connection  
 
 /* Bluetooth L2CAP PSM */
-const byte L2CAP_PSM_HID_CTRL = 0x11;// HID_Control        
-const byte L2CAP_PSM_HID_INTR = 0x13;// HID_Interrupt
+const char L2CAP_PSM_HID_CTRL = 0x11;// HID_Control        
+const char L2CAP_PSM_HID_INTR = 0x13;// HID_Interrupt
 
 boolean PS3BTConnected;// Variable used to indicate if the normal playstation controller is successfully connected
 boolean PS3MoveBTConnected;// Variable used to indicate if the move controller is successfully connected
@@ -305,7 +302,7 @@ void loop() {
             outputBT += " - R3";
 
           if(GetButton(SELECT))
-            outputBT += " - Select";
+            outputBT += " - Select - " + GetStatusString();;
           if(GetButton(START))
             outputBT += " - Start";                                
         }                  
