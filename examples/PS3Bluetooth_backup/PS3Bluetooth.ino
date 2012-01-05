@@ -1,4 +1,3 @@
-//#include <Max3421e.h>
 #include <Usb.h>
 #include <MemoryFree.h>
 #include <avr/pgmspace.h>

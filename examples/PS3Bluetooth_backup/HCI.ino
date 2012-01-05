@@ -191,7 +191,7 @@ void HCI_task()
       for (char i = 0; i < 20; i++){
         if(local_name[i] == NULL) 
           break;
-        Serial.print(local_name[i]);
+        Serial.write(local_name[i]);
       }
       hci_state = HCI_BDADDR_STATE;
       hci_read_bdaddr();         
@@ -241,7 +241,7 @@ void HCI_task()
       {
         if(remote_name[remote_name_entry][i] == NULL)
           break;
-        Serial.print(remote_name[remote_name_entry][i]);   
+        Serial.write(remote_name[remote_name_entry][i]);   
       }             
 
       hci_accept_connection(0);
