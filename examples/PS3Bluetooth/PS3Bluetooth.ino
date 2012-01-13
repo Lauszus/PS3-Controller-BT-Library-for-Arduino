@@ -119,7 +119,6 @@ unsigned char dev_role;
 #define L2CAP_EV_L2CAP_DONE 8
 #define L2CAP_EV_INTERRUPT_DISCONNECT 9
 #define L2CAP_EV_CONTROL_DISCONNECT 10
-
 unsigned char l2cap_state;
 
 // Used For Connection Response - Remember to Include High Byte
@@ -390,7 +389,7 @@ void loop() {
       }
       if (outputBT != "" && outputBT != lastOutputBT)//Check if output is not empty and not equal to the last one
         Serial.print("\r\nPS3 Move Controller" + outputBT);
-      lastOutputBT = outputBT;
+      lastOutputBT = outputBT;      
     }
   }
 }
@@ -448,7 +447,6 @@ void CSR_init( void )
 
   printProgStr(CSR_Init_str);
   delay(200);
-
 }
 
 // Print a string from Program Memory directly to save RAM 

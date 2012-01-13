@@ -1,9 +1,11 @@
 void HCI_event_task()
 {
   byte rcode = 0;  //return code
+  /*
   char char_left;
   char result_pointer;
   char buf_offset;
+  */
   /* check the event pipe*/
   rcode = Usb.inTransfer(BT_ADDR, ep_record[ EVENT_PIPE ].epAddr, MAX_BUFFER_SIZE, hcibuf, USB_NAK_NOWAIT); // input on endpoint 1
   if ( !rcode)
@@ -319,8 +321,6 @@ void HCI_task()
       hci_state = HCI_SCANNING_STATE;
     }
     break;
-
-
   default:
     break;
   }

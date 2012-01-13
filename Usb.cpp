@@ -389,8 +389,10 @@ void USB::Task( void )      //USB state machine
             }
             break;
         case USB_STATE_ADDRESSING:
-            for( i = 1; i < USB_NUMDEVICES; i++ ) {
-                if( devtable[ i ].epinfo == NULL ) {
+            for( i = 1; i < USB_NUMDEVICES; i++ ) 
+            {
+                if( devtable[ i ].epinfo == NULL ) 
+                {
                     devtable[ i ].epinfo = devtable[ 0 ].epinfo;        //set correct MaxPktSize
                                                                         //temporary record
                                                                         //until plugged with real device endpoint structure
